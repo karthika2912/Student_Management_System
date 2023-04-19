@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>
+            Add Courses 
+        </title>
+    </head>
+    <body>
+        {% csrf_token %}
+        <center><h2>Select Courses for Student</h2></center>
+        {% csrf_token %}
+        <form action="Class_StudentCreate/" method="POST">
+            <label>Student Name:</label>
+            <input type="text" name="name" id="name" value="{{response.name}}"><br><br>
+            <label>Student Roll Number:</label>
+            <input type="text" name="roll" id="roll" value="{{response.roll}}"><br><br>
+            <label>Student Department:</label>
+            <input type="text" name="department" id="department" value="{{department}}"><br><br>
+            <select id="student_class" name="student_class">
+                <option value="A">Class-A</option>
+                <option value="B">Class-B</option>
+                <option value="C">Class-C</option>
+            </select>
+            <button>SUBMIT</button>
+            
+    </form>
+
+    </body>
+</html>

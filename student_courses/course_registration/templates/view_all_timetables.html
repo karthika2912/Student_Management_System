@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>All TimeTables</title>
+    </head>
+    <body>
+        <center><h1>Class wise Time Tables</h1></center>
+        <center>
+            <h2>CLASS A</h2>
+            <table border="1">
+                <tr>
+                    <th>First Hour</th>
+                    <th>Second Hour</th>
+                    <th>Third Hour</th>
+                </tr>
+                <tr>
+                    {% for obj in class_a %}
+                    <td>{{obj}}</td>
+                    {% endfor %}
+                    </tr>
+
+            </table>
+
+            <h2>CLASS B</h2>
+            <table border="1">
+                <tr>
+                    <th>First Hour</th>
+                    <th>Second Hour</th>
+                    <th>Third Hour</th>
+                </tr>
+                <tr>
+                    {% for obj in class_b %}
+                    <td>{{obj}}</td>
+                    {% endfor %}
+                    </tr>
+
+            </table>
+
+            <h2>CLASS C</h2>
+            <table border="1">
+                <tr>
+                    <th>First Hour</th>
+                    <th>Second Hour</th>
+                    <th>Third Hour</th>
+                </tr>
+                <tr>
+                {% for obj in class_c %}
+                <td>{{obj}}</td>
+                {% endfor %}
+                </tr>
+
+            </table>
+
+
+
+        </center>
+    </body>
+</html>

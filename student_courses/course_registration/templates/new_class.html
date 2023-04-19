@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>
+            Add New Class
+        </title>
+    </head>
+    <body>
+        <form action="create_class/" method="POST">
+            {% csrf_token %}
+        <label>Enter Class Name</label>
+        <input type="text" name="class_name" id="class_name"><br><br>
+        <button>SUBMIT</button>
+    </form>
+    </body>
+</html>

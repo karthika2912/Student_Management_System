@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>
+            Student_List
+        </title>
+
+    </head>
+<body>
+    {% csrf_token %} 
+    <h1>Student List</h1>
+    <table border="1">
+        <tr>
+        <th>ID</th>
+        <th>Roll Number</th>
+        <th>Name</th>
+        <th>Department</th>
+    </tr>
+    {% for res in response%}
+    <tr>
+        <td>{{res.id}}</td>
+        <td>{{res.roll}}</td>
+        <td>{{res.name}}</td>
+        <td>{{res.department}}</td>
+       <td> <a href="/api/add_course/{{res.id}}" >Add</a></td>
+       <td><a href="/api/delete_course/{{res.id}}">Delete</a></td>
+       <td><a href="/api/view_course/{{res.id}}">View Course</a></td>
+    </tr>
+    {% endfor %}
+    </table>
+    <br>
+   
+</body>
+</html>

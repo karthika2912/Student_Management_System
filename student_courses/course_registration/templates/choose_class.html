@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>
+            Time Table
+        </title>
+    </head>
+    <body>
+        <h1> Time Table </h1>
+        <form action="set_class" method="POST">
+            {% csrf_token %}
+            <label>Select Class</label>
+            <select id="class_name" name="class_name">
+                <option value="A">CLASS-A</option>
+                <option value="B">CLASS-B</option>
+                <option value="C">CLASS-C</option>
+            </select>
+            <br>
+            <br>
+            <button>SUBMIT</button>
+            </form>
+            </body>
+            </html>

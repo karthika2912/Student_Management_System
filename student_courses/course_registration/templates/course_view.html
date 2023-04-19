@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>
+            Courses View
+        </title>
+    </head>
+    <body>
+        {% for sub in temp_list %}
+                <h1>Course Selected is : {{sub.1}} <a href="/api/delete_course_wise/{{sub.0}}/{{sub.2}}">Delete</a></h1>
+        {% endfor %}
+
+
+    </body>
+</html>

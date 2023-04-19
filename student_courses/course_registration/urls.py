@@ -1,0 +1,35 @@
+from django.urls import path
+from . import views
+
+urlpatterns=[
+    path('',views.apiOverview,name="api-overview"),
+    path('student-list/',views.studentList,name="student-list"),
+    path('student-detail/<str:pk>',views.studentDetail,name="student-detail"),
+    path('create/',views.Create,name="create"),
+    path('update/<str:pk>',views.Update,name="update"),
+    path('delete/<str:pk>',views.Delete,name="delete"),
+    path('home',views.home,name="home"),
+    path('add_student',views.add_student,name="home"),
+    path('update_student/<str:roll>',views.update_student),
+    path('update_student/update/<str:pk>',views.Update),
+    path('home_course',views.home_course,name="Courses"),
+    path('add_course/<str:roll>',views.add_course,name="Add Courses"),
+    path('add_course/courseCreate/',views.courseCreate,name="courseCreate"),
+    path('view_course/<str:roll>',views.view_courses,name="View_Courses"),
+    path('delete_course/<str:roll>',views.delete_course,name="Delete_Courses"),
+    path('delete_course_wise/<str:roll>/<str:course_id>',views.delete_course_wise),
+    path('home_class/',views.home_class,name="View Classes"),
+    path('add_class/<str:roll>',views.add_class_student,name="Add Classes"),
+    path('add_class/Class_StudentCreate/',views.Class_StudentCreate,name="Class_StudentCreate"),
+    path('view_class_students/',views.view_class_students),
+    path('delete_class/<str:roll>',views.delete_class),
+    path('timetable/',views.TimeTable),
+    path('createTimeTable/',views.createTimeTable),
+    path('view_time_table/<str:class_title>',views.view_time_table),
+    path('choose_class',views.choose_class),
+    path('set_class',views.set_class),
+    path('view_all_timetables/',views.view_all_time_tables),
+    path('add_home_class/',views.add_home_class),
+    path('add_class/',views.add_class),
+    path('add_class/create_class/',views.classObjectCreate)
+]
