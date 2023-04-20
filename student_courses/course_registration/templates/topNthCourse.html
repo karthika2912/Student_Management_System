@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Top Nth Course</title>
+    </head>
+    <body>
+         <h1>Top {{n}} registered Courses</h1>
+         {% for course in courses %}
+        <p><b>Course Name:</b></p>
+         <p>{{course.0}}</p>
+         <p><b>Course Count:</b></p>
+         <p>{{course.1}}</p>
+         {% endfor %}
+         
+
+    </body>
+</html>

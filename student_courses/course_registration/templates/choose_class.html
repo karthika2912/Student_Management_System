@@ -10,13 +10,13 @@
             {% csrf_token %}
             <label>Select Class</label>
             <select id="class_name" name="class_name">
-                <option value="A">CLASS-A</option>
-                <option value="B">CLASS-B</option>
-                <option value="C">CLASS-C</option>
+                {% for cls in classes%}
+                <option value="{{cls.class_name}}">Class-{{cls.class_name}}</option>
+                {% endfor %}
             </select>
             <br>
             <br>
             <button>SUBMIT</button>
-            </form>
-            </body>
-            </html>
+        </form>
+    </body>
+</html>

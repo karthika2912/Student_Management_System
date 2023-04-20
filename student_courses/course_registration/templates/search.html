@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Search</title>
+    </head>
+    <body>
+        <h1>Search Student By Name</h1>
+        <form action="searchStudent/" method="POST"> 
+            {% csrf_token %}
+            <label>Search - Student :</label>
+            <input type="text" name="name" id="name"><br>
+            <br>
+            <button>SUBMIT</button>
+
+        </form>
+
+        <h2>Top N-th Course Selected by Student</h2>
+        <form action="topNCourse" method="POST"> 
+            {% csrf_token %}
+            <label>Search - Top N :</label>
+            <input type="text" name="name" id="name"><br>
+            <br>
+            <button>SUBMIT</button>
+
+        </form>
+
+    </body>
+</html>

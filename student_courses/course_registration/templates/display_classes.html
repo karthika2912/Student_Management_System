@@ -8,16 +8,19 @@
             <tr>
                 <th>Class ID</th>
                 <th>Class Name</th>
+                <th>Click</th>
             </tr>
             {% for cls in classes%}
             <tr>
                 <td>{{cls.id}}</td>
                 <td>{{cls.class_name}}</td>
+                <td><a href="/api/delete_section/{{cls.id}}">Delete</a></td>
             </tr>
             {% endfor %}
        </table>
        <br>
        <br>
        <a href="/api/add_class">Add Class</a>
+       
     </body>
 </html>

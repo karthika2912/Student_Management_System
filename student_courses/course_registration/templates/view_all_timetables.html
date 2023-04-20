@@ -5,52 +5,25 @@
     <body>
         <center><h1>Class wise Time Tables</h1></center>
         <center>
-            <h2>CLASS A</h2>
+            {% for time_table in response_list %}
+            <h2>Class-{{time_table.0}} Time Table</h2>
             <table border="1">
                 <tr>
-                    <th>First Hour</th>
-                    <th>Second Hour</th>
-                    <th>Third Hour</th>
+                    <th>first_hour</th>
+                    <th>second_hour</th>
+                    <th>third_hour</th>
                 </tr>
                 <tr>
-                    {% for obj in class_a %}
-                    <td>{{obj}}</td>
-                    {% endfor %}
-                    </tr>
+                    <td>{{time_table.1}}</td>
+                    <td>{{time_table.2}}</td>
+                    <td>{{time_table.3}}</td>
+                    
+                </tr>
+
 
             </table>
 
-            <h2>CLASS B</h2>
-            <table border="1">
-                <tr>
-                    <th>First Hour</th>
-                    <th>Second Hour</th>
-                    <th>Third Hour</th>
-                </tr>
-                <tr>
-                    {% for obj in class_b %}
-                    <td>{{obj}}</td>
-                    {% endfor %}
-                    </tr>
-
-            </table>
-
-            <h2>CLASS C</h2>
-            <table border="1">
-                <tr>
-                    <th>First Hour</th>
-                    <th>Second Hour</th>
-                    <th>Third Hour</th>
-                </tr>
-                <tr>
-                {% for obj in class_c %}
-                <td>{{obj}}</td>
-                {% endfor %}
-                </tr>
-
-            </table>
-
-
+            {% endfor %}
 
         </center>
     </body>

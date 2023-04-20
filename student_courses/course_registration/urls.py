@@ -31,5 +31,9 @@ urlpatterns=[
     path('view_all_timetables/',views.view_all_time_tables),
     path('add_home_class/',views.add_home_class),
     path('add_class/',views.add_class),
-    path('add_class/create_class/',views.classObjectCreate)
+    path('add_class/create_class/',views.classObjectCreate),
+    path('delete_section/<str:class_id>/',views.delete_section),
+    path('search_student/',views.search_student),
+    path('search_student/searchStudent/',views.searchStudent),
+    path('search_student/topNCourse',views.topNCourse)
 ]

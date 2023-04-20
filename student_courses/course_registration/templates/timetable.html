@@ -15,7 +15,7 @@
             <br>
             <label>Select Course for First Hour</label>
             <select id="first_hour" name="first_hour">
-                {% for course in f_l %}
+                {% for course in first_list %}
                 <option value="{{course}}">{{course}}</option>
                 {% endfor %}
             </select>
@@ -23,7 +23,7 @@
             <br>
             <label>Select Course for Second Hour</label>
             <select id="second_hour" name="second_hour">
-                {% for course in s_l%}
+                {% for course in second_list %}
                 <option value="{{course}}">{{course}}</option>
                 {% endfor %}
             </select>
@@ -31,7 +31,7 @@
             <br>
             <label>Select Course for Third Hour</label>
             <select id="third_hour" name="third_hour">
-                {% for course in t_l %}
+                {% for course in third_list %}
                 <option value="{{course}}">{{course}}</option>
                 {% endfor %}
             </select>

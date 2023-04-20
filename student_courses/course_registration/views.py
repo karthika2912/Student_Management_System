@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .serializers import StudentSerializer,Department_DetailsSerializer,Student_Course_DetailsSerializer
 from .models import Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model
 from django.http import HttpRequest
+from django.db.models import Count
 
 from django.shortcuts import get_object_or_404
 
@@ -100,10 +101,8 @@ def add_course(request,roll):
     d2=Department_Details.objects.get(pk=d1.id)
     dept_name=d2.department_name
     dep=Department_wise_Course_Details.objects.filter(department_name_id=d1)
-    course_list=[]
-    for d in dep:
-        course_list.append(d.course_title)
-    return render(request,"add_course.html",{"res":res,"c1":course_list[0],"c2":course_list[1],"dept_name":dept_name})
+
+    return render(request,"add_course.html",{"res":res,"courses":dep,"dept_name":dept_name})
 
 @api_view(['POST'])
 def courseCreate(request):
@@ -309,6 +308,7 @@ def createTimeTable(request):
         
         t1=Time_Table_Model.objects.get(class_id=class_object)
 
+
         t1.first_hour_course=f
         t1.second_hour_course=s
         t1.third_hour_course=t
@@ -320,84 +320,65 @@ def createTimeTable(request):
 
 def set_class(request):
     if request.method=='POST':
-        class_section=request.POST.get('class_name')
-        print(class_section)
-        classes=['A','B','C']
-        class_titles=[]
-        for i in classes:
-            if i!=class_section:
-                class_titles.append(i)
-        print(class_titles)
+        class_name=request.POST.get('class_name')
         
-        f_l=[]
-        s_l=[]
-        t_l=[]
-        dep=Department_wise_Course_Details.objects.all()
-        for d in dep:
-            f_l.append(d.course_title)
-            s_l.append(d.course_title)
-            t_l.append(d.course_title)
-        print(f_l)
-        print(s_l)
-        print(t_l)
-        
-        for cls in class_titles:
-            c1=Class_Details.objects.get(class_name=cls)
-            t1=Time_Table_Model.objects.get(class_id=c1)
-            f_h=t1.first_hour_course.course_title
-            s_h=t1.second_hour_course.course_title
-            t_h=t1.third_hour_course.course_title
-            print(f_h)
-            print(s_h)
-            print(t_h)
-            f_l.remove(f_h)
-            s_l.remove(s_h)
-            t_l.remove(t_h)
+        time_obj=Time_Table_Model.objects.all()
+        class_obj=Class_Details.objects.all()
+        dep_obj=Department_wise_Course_Details.objects.all()
+        class_list=[]
+        first_list=[]
+        second_list=[]
+        third_list=[]
+        for dep in dep_obj:
+            first_list.append(dep.course_title)
+            second_list.append(dep.course_title)
+            third_list.append(dep.course_title)
+
+        for cls in class_obj:
+            class_list.append(cls.class_name)
+        class_list.remove(class_name)
 
         
+        for tym_obj in time_obj:
+            first_hour=tym_obj.first_hour_course.course_title
+            second_hour=tym_obj.second_hour_course.course_title
+            third_hour=tym_obj.third_hour_course.course_title
+            first_list.remove(first_hour)
+            second_list.remove(second_hour)
+            third_list.remove(third_hour)
 
-        return render(request,"timetable.html",{'class_section':class_section,'f_l':f_l,'s_l':s_l,'t_l':t_l})
-    
+
+        print(first_list,second_list,third_list)
+        
+        return render(request,"timetable.html",{'first_list':first_list,'second_list':second_list,'third_list':third_list,'class_section':class_name})
+
+        
 def choose_class(request):
-    return render(request,"choose_class.html")
+    classes=Class_Details.objects.all()
+    return render(request,"choose_class.html",{'classes':classes})
 
 def view_all_time_tables(request):
     
-    class_a=[]
-    class_b=[]
-    class_c=[]
-    
-    c1=Class_Details.objects.get(class_name='A')
-    t1=Time_Table_Model.objects.get(class_id=c1)
-    f_h=t1.first_hour_course.course_title
-    s_h=t1.second_hour_course.course_title
-    t_h=t1.third_hour_course.course_title
+    time_table_objects=Time_Table_Model.objects.all()
+    response_list=[]
+    for time_obj in time_table_objects:
+        temp_list=[]
+        class_id = time_obj.class_id
+        class_object=Class_Details.objects.get(pk=class_id.id)
+        class_name=class_object.class_name
+        fh=time_obj.first_hour_course.course_title
+        sh=time_obj.second_hour_course.course_title
+        th=time_obj.third_hour_course.course_title
 
-    class_a.append(f_h)
-    class_a.append(s_h)
-    class_a.append(t_h)
+        temp_list.append(class_name)
+        temp_list.append(fh)
+        temp_list.append(sh)
+        temp_list.append(th)
 
-    c2=Class_Details.objects.get(class_name='B')
-    t2=Time_Table_Model.objects.get(class_id=c2)
-    f_h2=t2.first_hour_course.course_title
-    s_h2=t2.second_hour_course.course_title
-    t_h2=t2.third_hour_course.course_title
-    
-    class_b.append(f_h2)
-    class_b.append(s_h2)
-    class_b.append(t_h2)
+        response_list.append(temp_list)
+    print(temp_list)
 
-    c3=Class_Details.objects.get(class_name='C')
-    t3=Time_Table_Model.objects.get(class_id=c3)
-    f_h3=t3.first_hour_course.course_title
-    s_h3=t3.second_hour_course.course_title
-    t_h3=t3.third_hour_course.course_title
-    
-    class_c.append(f_h3)
-    class_c.append(s_h3)
-    class_c.append(t_h3)
-
-    return render(request,"view_all_timetables.html",{'class_a':class_a,'class_b':class_b,'class_c':class_c})
+    return render(request,"view_all_timetables.html",{'response_list':response_list})
 
 def add_home_class(request):
     classes=Class_Details.objects.all()
@@ -413,14 +394,51 @@ def classObjectCreate(request):
         if len(check_object)==0:
             class_object = Class_Details(class_name=class_name)
             class_object.save()
+            d1=Department_wise_Course_Details.objects.get(pk=1)
+            t1=Time_Table_Model(class_id=class_object,first_hour_course=d1,second_hour_course=d1,third_hour_course=d1)
+            t1.save()
+
             return redirect('/api/add_home_class')
         else:
             return redirect('/api/add_home_class')
 
-#done
+def delete_section(request,class_id):
+    c1=Class_Details.objects.get(pk=class_id)
+    c1.delete()
+    return redirect('/api/add_home_class')
+
+def search_student(request):
+    return render(request,"search.html")
     
+def searchStudent(request):
+    if request.method == 'POST':
+        student_name = request.POST.get('name')
+        objects = Student_Details.objects.filter(name__contains=student_name)
+        student_list=[]
+        for obj in objects:
+            temp=[]
+            temp.append(obj.name)
+            temp.append(obj.roll)
+            print(obj.department)
+            temp.append(obj.department.department_name)
+            student_list.append(temp)
+
+        return render(request,"search_details.html",{'response':student_list})
+    
+def topNCourse(request):
+    if request.method == 'POST':
+        top_n=request.POST.get("name")
+        temp_list=[]
+        top_course=(Student_Course_Details.objects.values('course_name').annotate(count=Count('id')).order_by('-count')[:int(top_n)])
+        for item in top_course:
+            l=[]
+            l.append(Department_wise_Course_Details.objects.get(pk=item['course_name']).course_title)
+            l.append(item['count'])
+            temp_list.append(l)
+        return render(request,"topNthCourse.html",{'n':top_n,'courses':temp_list}) 
 
 
+    
 
 
 

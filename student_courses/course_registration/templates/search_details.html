@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Result of Search Student</title>
+    </head>
+    <body>
+        <h1>Student List</h1>
+        {% for res in response %}
+        <b><p>Student Name: </p></b>
+        <p>{{res.0}}</p>
+        <b><p>Student roll: </p></b>
+        <p>{{res.1}}</p>
+        <b><p>Student Department: </p></b>
+        <p>{{res.2}}</p>
+        {% endfor %}
+    </body>
+</html>
