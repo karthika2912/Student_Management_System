@@ -2,13 +2,21 @@ from django.urls import path
 from . import views
 
 urlpatterns=[
-    path('',views.apiOverview,name="api-overview"),
+    path('',views.main_home_page),
+    path('register_user/',views.register_user),
+    path('register_user/register_user/',views.register_user),
+    path('register_staff/',views.register_staff),
+    path('register_staff/register_staff/',views.register_staff),
+    path('login_user',views.login_user),
+    path('login_user/',views.login_user),
+     path('login_user/login_user/',views.login_user),
+    path('logout_user/',views.logout_user),
     path('student-list/',views.studentList,name="student-list"),
     path('student-detail/<str:pk>',views.studentDetail,name="student-detail"),
     path('create/',views.Create,name="create"),
     path('update/<str:pk>',views.Update,name="update"),
     path('delete/<str:pk>',views.Delete,name="delete"),
-    path('home',views.home,name="home"),
+    path('home/',views.home,name="home"),
     path('add_student',views.add_student,name="home"),
     path('update_student/<str:roll>',views.update_student),
     path('update_student/update/<str:pk>',views.Update),

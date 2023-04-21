@@ -6,6 +6,7 @@
 
     </head>
 <body>
+    
     <h1>Student List</h1>
     {% csrf_token %} 
     <table border="1">
@@ -29,6 +30,8 @@
     <br>
     <h1>Add student</h1>
     <a href="/api/add_student" class="btn btn-danger">ADD</a>
+
+    <a href="/api/logout_user/" class="btn btn-danger">LOGOUT</a>
     
 </body>
 </html>

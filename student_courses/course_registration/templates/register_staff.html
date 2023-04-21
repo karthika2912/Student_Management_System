@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Register</title>
+    </head>
+    <body>
+        <center><h1>STAFF REGISTRATION FORM</h1></center>
+        <form action="register_staff/" method="POST">
+            {% csrf_token %}
+        <label>Enter First Name :</label>
+        <input type="text" name="first_name" id="first_name"><br><br>
+        <label>Enter Last Name :</label>
+        <input type="text" name="last_name" id="last_name"><br><br>
+        <label>Enter User Name :</label>
+        <input type="text" name="username" id="username"><br><br>
+        <label>Enter Email :</label>
+        <input type="email" name="email" id="email"><br><br>
+        <label>Enter Password :</label>
+        <input type="password" name="password" id="password"><br><br>
+        <label>Confirm Password :</label>
+        <input type="password" name="confirm_password" id="confirm_password"><br><br>
+        <button>SUBMIT</button>
+      
+        </form>
+
+        {% for message in messages %}
+        <p>{{message}}</p>
+        {% endfor %}
+
+    </body>
+</html>

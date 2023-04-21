@@ -6,6 +6,8 @@ from .serializers import StudentSerializer,Department_DetailsSerializer,Student_
 from .models import Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model
 from django.http import HttpRequest
 from django.db.models import Count
+from django.contrib.auth.models import User,auth
+from django.contrib import messages
 
 from django.shortcuts import get_object_or_404
 
@@ -31,7 +33,8 @@ def studentList(request):
     return Response(serializer.data)
 
 def home(request):
-    response=requests.get('http://127.0.0.1:8001/api/student-list').json()
+    print("Entered Home")
+    response=requests.get('http://127.0.0.1:8001/api/student-list/').json()
     print(response)
     for res in response:
         k=res['department']
@@ -92,7 +95,7 @@ def update_student(request,roll):
     return render(request,"update.html",{"std":std})
 
 def home_course(request):
-    response=requests.get('http://127.0.0.1:8001/api/student-list').json()
+    response=requests.get('http://127.0.0.1:8001/api/student-list/').json()
     return render(request,'home_course.html',{'response':response})
 
 def add_course(request,roll):
@@ -438,11 +441,89 @@ def topNCourse(request):
         return render(request,"topNthCourse.html",{'n':top_n,'courses':temp_list}) 
 
 
+def main_home_page(request):
+    return render(request,"main_home.html")   
+
+def register_user(request):
+    if request.method == 'POST':
+        print("entered register_user")
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        if password == confirm_password:
+            print("same password")
+            if User.objects.filter(username=username).exists():
+                print("user already exists")
+                messages.info(request,'User Already Exists')
+                return redirect('/api/register_user/')
+            else:
+                
+                user=User.objects.create_user(username=username,password=password,email=email,first_name=first_name,last_name=last_name)
+                user.set_password(password)
+                user.is_staff=False
+                user.save()
+                print("Success")
+                return redirect('/api/login_user')
+            
+    else:
+        return render(request,"register.html")
     
+def register_staff(request):
+    if request.method == 'POST':
+        print("entered register_staff")
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        if password == confirm_password:
+            print("same password")
+            if User.objects.filter(username=username).exists():
+                print("user already exists")
+                messages.info(request,'User Already Exists')
+                return redirect('/api/register_staff/')
+            else:
+                
+                user=User.objects.create_user(username=username,password=password,email=email,first_name=first_name,last_name=last_name)
+                user.set_password(password)
+                user.is_staff=True
+                user.save()
+                print("Success")
+                return redirect('/api/login_user')
+            
+    else:
+        return render(request,"register_staff.html")
 
 
+def login_user(request):
+    print("entered login user")
+    if request.method == "POST":
+        print("entered login page")
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+         
+        user = auth.authenticate(username=username,password=password)
 
+        if user is not None:
+            print("login successful")
+            if user.is_staff:
+                return redirect('/api/home/')
+            else:
+                return redirect('/api/home_course')
+        else:
+            messages.info(request,'Invaid User')
+            return redirect('/api/login_user/')
+        
+    else:
+        return render(request,"login.html")
 
+def logout_user(request):
+    auth.logout(request)
+    return redirect('/api/')
 
 
 
