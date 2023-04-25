@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'course_registration',
-    'rest_framework'
+    'rest_framework',
+    'pdfkit'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'course_registration.middleware.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'student_courses.urls'
@@ -122,6 +126,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
+
+MEDIA_URL="/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -3,13 +3,22 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import StudentSerializer,Department_DetailsSerializer,Student_Course_DetailsSerializer
-from .models import Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model
-from django.http import HttpRequest
+from .models import Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model,Resumes
+from django.http import HttpRequest,Http404,HttpResponseNotFound,HttpResponse,HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
+import os
+import pdfkit
+from io import BytesIO
+from django.conf import settings
+from django.core.files.storage import default_storage
 
-from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
 
 
 import requests
@@ -525,6 +534,74 @@ def logout_user(request):
     auth.logout(request)
     return redirect('/api/')
 
+def pdf_view(request):
+    buf = io.BytesIO()
+    c =  canvas.Canvas(buf,pagesize=letter,bottomup=0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch,inch)
+    textob.setFont("Helvetica",14)
+    
+    time_table_objects=Time_Table_Model.objects.all()
+    lines = []
+
+    for obj in time_table_objects:
+        lines.append("Class-"+obj.class_id.class_name+" Time-Table")
+        lines.append("First Hour Course: "+obj.first_hour_course.course_title)
+        lines.append("Second Hour Course: "+obj.second_hour_course.course_title)
+        lines.append("Third Hour Course: "+obj.third_hour_course.course_title)
+        lines.append(" ")
+
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf,as_attachment=True,filename='test.pdf')
+
+def resume_upload(request):
+    student_objs=Student_Details.objects.all()
+    
+    return render(request,"resume_upload.html",{'student_list':student_objs})
+
+def save_resume(request):
+    if request.method == 'POST':
+        student_id = request.POST.get('student')
+        file = request.FILES['file_id']
+        print(student_id)
+        print(file)
+        file_name = default_storage.save(file.name, file)
+
+        file = default_storage.open(file_name)
+        file_url = default_storage.url(file_name)
+        print(file_url)
+
+        student_obj=Student_Details.objects.get(pk=student_id)
+        if Resumes.objects.filter(student_id=student_obj).exists():
+            res=Resumes.objects.get(student_id=student_obj)
+            res.resume=file_url
+            res.save()
+        else:
+            resume_object =Resumes(student_id=student_obj,resume=file_url)
+            resume_object.save()
+
+        return redirect('/api/')
+
+def view_all_resumes(request):
+    resumes=Resumes.objects.all()
+    
+    return render(request,"all_resumes.html",{'resumes':resumes})
+
+def view_pdf(request,file_name):
+    url_link="http://127.0.0.1:8001/media/"+file_name
+    print(url_link)
+    return HttpResponseRedirect(url_link)
+
+
+
+ 
 
 
 

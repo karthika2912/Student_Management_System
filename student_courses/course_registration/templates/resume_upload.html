@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>
+            Resumes Upload
+        </title>
+    </head>
+    <body>
+        <h1>Upload Resume</h1>
+        <form action="save_resume/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Select Student</label>
+            <select id="student" name="student">
+                {% for student in student_list %}
+                <option value="{{student.id}}">{{student.name}}</option>
+                {% endfor %}
+                
+            </select>
+            <br><br>
+
+            <label> Choose File </label>
+            
+            <input type="file" name="file_id" id="file_id"><br><br>
+            <button>SUBMIT</button>
+     </form>
+    </body>
+</html>

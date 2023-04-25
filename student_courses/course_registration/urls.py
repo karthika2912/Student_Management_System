@@ -43,5 +43,12 @@ urlpatterns=[
     path('delete_section/<str:class_id>/',views.delete_section),
     path('search_student/',views.search_student),
     path('search_student/searchStudent/',views.searchStudent),
-    path('search_student/topNCourse',views.topNCourse)
+    path('search_student/topNCourse',views.topNCourse),
+    path('view_pdf/',views.pdf_view),
+    path('resume_upload/',views.resume_upload),
+    path('resume_upload/save_resume/',views.save_resume),
+    path('view_all_resumes/',views.view_all_resumes),
+     path('view_pdf/media/<str:file_name>',views.view_pdf),
+   
+
 ]

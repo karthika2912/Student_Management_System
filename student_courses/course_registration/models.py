@@ -38,5 +38,11 @@ class Time_Table_Model(models.Model):
     class Meta:
         unique_together=('class_id',)
 
+class Resumes(models.Model):
+    student_id = models.ForeignKey(Student_Details,on_delete=models.CASCADE)
+    resume = models.FileField(null = True)
+    
+
+
     
 

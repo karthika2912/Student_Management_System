@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>
+            All Resumes
+        </title>
+    </head>
+    <body>
+        <center>
+            <h1>Student Resumes List</h1>
+        <table border="1">
+            <tr>
+                <th>Roll-Number</th>
+                <th>Student-Name</th>
+                <th>Department</th>
+                <th>Resume Link</th>
+            </tr>
+            {% for res in resumes %}
+            <tr>
+                <td>{{res.student_id.roll}}</td>
+                <td>{{res.student_id.name}}</td>
+                <td>{{res.student_id.department.department_name}}</td>
+                <td><a href="/api/view_pdf{{res.resume}}">Resume-{{res.student_id.name}}</a><br></td>
+                
+            
+            </tr>
+            {% endfor %}
+        </table>
+    </center>
+    
+    
+
+
+    </body>
+</html>
+
