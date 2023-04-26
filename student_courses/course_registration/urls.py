@@ -1,7 +1,12 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
+from django_email_verification import urls as mail_urls
 
 urlpatterns=[
+    path('verify/<token>',views.verify),
+    path('error_page/',views.error_page),
+    path('token_send/',views.token_send),
+    path('success/',views.success),
     path('',views.main_home_page),
     path('register_user/',views.register_user),
     path('register_user/register_user/',views.register_user),
@@ -48,7 +53,7 @@ urlpatterns=[
     path('resume_upload/',views.resume_upload),
     path('resume_upload/save_resume/',views.save_resume),
     path('view_all_resumes/',views.view_all_resumes),
-     path('view_pdf/media/<str:file_name>',views.view_pdf),
-   
+    path('view_pdf/media/<str:file_name>',views.view_pdf),
+    path('email/',include(mail_urls))
 
 ]

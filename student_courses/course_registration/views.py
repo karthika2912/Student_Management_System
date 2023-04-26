@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import StudentSerializer,Department_DetailsSerializer,Student_Course_DetailsSerializer
-from .models import Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model,Resumes
+from .models import Account,Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model,Resumes
 from django.http import HttpRequest,Http404,HttpResponseNotFound,HttpResponse,HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.models import User,auth
@@ -13,15 +13,17 @@ import pdfkit
 from io import BytesIO
 from django.conf import settings
 from django.core.files.storage import default_storage
-
+import uuid
 from django.http import FileResponse
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
-
-
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.core.mail import send_mail
 import requests
+from datetime import datetime
 
 class_section=""
 @api_view(['GET'])
@@ -453,6 +455,9 @@ def topNCourse(request):
 def main_home_page(request):
     return render(request,"main_home.html")   
 
+
+
+
 def register_user(request):
     if request.method == 'POST':
         print("entered register_user")
@@ -471,11 +476,19 @@ def register_user(request):
             else:
                 
                 user=User.objects.create_user(username=username,password=password,email=email,first_name=first_name,last_name=last_name)
+                
                 user.set_password(password)
+                auth_token=str(uuid.uuid4())
+                account_obj = Account.objects.create(user = user,auth_token = auth_token)
+                account_obj.save()
+
+
                 user.is_staff=False
                 user.save()
-                print("Success")
-                return redirect('/api/login_user')
+
+                send_mail_after_registration(auth_token,email)
+               
+                return redirect('/api/token_send/')
             
     else:
         return render(request,"register.html")
@@ -498,11 +511,22 @@ def register_staff(request):
             else:
                 
                 user=User.objects.create_user(username=username,password=password,email=email,first_name=first_name,last_name=last_name)
+                
                 user.set_password(password)
                 user.is_staff=True
                 user.save()
-                print("Success")
-                return redirect('/api/login_user')
+                auth_token=str(uuid.uuid4())
+                account_obj = Account.objects.create(user = user,auth_token = auth_token)
+                account_obj.save()
+
+
+                user.is_staff=False
+                user.save()
+
+                send_mail_after_registration(auth_token,email)
+               
+                return redirect('/api/token_send/')
+                
             
     else:
         return render(request,"register_staff.html")
@@ -516,10 +540,13 @@ def login_user(request):
         password = request.POST.get('password')
          
         user = auth.authenticate(username=username,password=password)
+        account_obj = Account.objects.filter(user=user)
+        if(account_obj[0].is_verified == False):
+            return redirect('/api/token_send/')
 
-        if user is not None:
+        if user is not None:                                                                                                                                                                                     
             print("login successful")
-            if user.is_staff:
+            if user.is_staff:                                                                                                                                                                                                                                                                                       
                 return redirect('/api/home/')
             else:
                 return redirect('/api/home_course')
@@ -537,9 +564,9 @@ def logout_user(request):
 def pdf_view(request):
     buf = io.BytesIO()
     c =  canvas.Canvas(buf,pagesize=letter,bottomup=0)
-    textob = c.beginText()
-    textob.setTextOrigin(inch,inch)
-    textob.setFont("Helvetica",14)
+    ob = c.beginText()
+    ob.setTextOrigin(inch,inch)
+    ob.setFont("Helvetica",14)
     
     time_table_objects=Time_Table_Model.objects.all()
     lines = []
@@ -552,14 +579,14 @@ def pdf_view(request):
         lines.append(" ")
 
     for line in lines:
-        textob.textLine(line)
+        ob.textLine(line)
 
-    c.drawText(textob)
+    c.drawText(ob)
     c.showPage()
     c.save()
     buf.seek(0)
 
-    return FileResponse(buf,as_attachment=True,filename='test.pdf')
+    return FileResponse(buf,as_attachment=True,filename='Time-Table.pdf')
 
 def resume_upload(request):
     student_objs=Student_Details.objects.all()
@@ -600,12 +627,49 @@ def view_pdf(request,file_name):
     return HttpResponseRedirect(url_link)
 
 
+def success(request):
+    return render(request,"success.html")
 
- 
+def token_send(request):
+    return render(request,"token_send.html")
 
+def send_mail_after_registration(token,email):
+    subject = 'Account Verification'
+    message = f'Hi paste the link to verify the account http://127.0.0.1:8001/api/verify/{token}'
+    email_from = settings.EMAIL_HOST_USER 
+    reception_list = [email]
+    send_mail(subject,message,email_from,reception_list)
 
-
+def verify(request,token):
     
+    account_obj = Account.objects.filter(auth_token = token).first()
+    print(account_obj.created_at)  
+    date_str=str(account_obj.created_at)
+    dt_obj = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f%z')
+    now_timestamp = datetime.now().timestamp() 
+    seconds = int(now_timestamp - dt_obj.timestamp()) 
+    print(seconds)   
+    if(seconds>=30):
+        user=User.objects.get(pk=account_obj.user.id)
+        print(user.first_name)
+        user.delete()
+        account_obj.delete()
+
+        return render(request,"time_out.html")
+    
+
+
+    if account_obj:
+        print("found")
+        account_obj.is_verified = True
+        account_obj.save()                                                                                  
+    else:                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        return render('/api/error_page/')
+    
+    return redirect('/api/success/')
+    
+def error_page(request):
+    return render(request,"error_page.html")
 
 
 
