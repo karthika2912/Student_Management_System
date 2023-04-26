@@ -653,7 +653,7 @@ def verify(request,token):
         user=User.objects.get(pk=account_obj.user.id)
         print(user.first_name)
         user.delete()
-        account_obj.delete()
+        account_obj.delete()    
 
         return render(request,"time_out.html")
     
