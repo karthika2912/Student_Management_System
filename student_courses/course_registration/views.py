@@ -635,7 +635,7 @@ def token_send(request):
 
 def send_mail_after_registration(token,email):
     subject = 'Account Verification'
-    message = f'Hi paste the link to verify the account http://127.0.0.1:8001/api/verify/{token}'
+    message = f'Hi click the link to verify the account http://127.0.0.1:8001/api/verify/{token}'
     email_from = settings.EMAIL_HOST_USER 
     reception_list = [email]
     send_mail(subject,message,email_from,reception_list)
