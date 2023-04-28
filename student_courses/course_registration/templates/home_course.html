@@ -6,8 +6,10 @@
 
     </head>
 <body>
+
     {% csrf_token %} 
     <h1>Student List</h1>
+    <h2>Hello {{user.username}}</h2>
     <table border="1">
         <tr>
         <th>ID</th>

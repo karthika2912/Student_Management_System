@@ -6,8 +6,9 @@
 
     </head>
 <body>
-    
+   
     <h1>Student List</h1>
+    <h2>Hello {{ user.username }}</h2>
     {% csrf_token %} 
     <table border="1">
         <tr>
@@ -32,6 +33,8 @@
     <a href="/api/add_student" class="btn btn-danger">ADD</a>
 
     <a href="/api/logout_user/" class="btn btn-danger">LOGOUT</a>
-    
+    {% for s in recently_updated_student %}
+    <p>{{s.name}}</p>
+    {% endfor %}
 </body>
 </html>

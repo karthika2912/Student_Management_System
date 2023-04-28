@@ -1,0 +1,18 @@
+<html>
+    <body>
+        <h1>Welcome to your Dashboard</h1>
+    <p>Here's an overview of your account:</p>
+    <ul>
+        <li>Username: {{ user.username }}</li>
+        <li>Email: {{ user.email }}</li>
+        <li>Last login: {{ user.last_login }}</li>
+    </ul>
+    <p>Here are some actions you can take:</p>
+    <ul>
+        
+        <li><a href="/api/logout_user/">Log out</a></li>
+    </ul>
+
+    </body>
+</html>
+    

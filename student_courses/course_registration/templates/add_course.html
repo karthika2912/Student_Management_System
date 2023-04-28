@@ -7,8 +7,10 @@
     <body>
         {% csrf_token %} 
         <center><h2>Select Courses for Student</h2></center>
-        {% csrf_token %} 
+        <h2>Hello {{user.username}}</h2>
+         
         <form action="courseCreate/" method="POST">
+            {% csrf_token %}
             <label>Student Name:</label>
             <input type="text" name="name" id="name" value="{{res.name}}"><br><br>
             <label>Student Roll Number:</label>

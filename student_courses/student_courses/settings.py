@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'pdfkit',
     'django_email_verification',
+    
 ]
 
 MIDDLEWARE = [
@@ -54,8 +55,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'course_registration.middleware.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
 
 ]
+
 
 ROOT_URLCONF = 'student_courses.urls'
 
@@ -116,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -146,5 +149,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'pallavikurmala'
-EMAIL_HOST_PASSWORD = 'dbjcelsyohtfozdg'
+EMAIL_HOST_USER = 'karthika.pappula2001@gmail.com'
+EMAIL_HOST_PASSWORD = 'yrjjmvjgrylrgdkw'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
