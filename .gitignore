@@ -1,5 +1,5 @@
 my_env
-/student_courses/student_courses/__pycache__
-/student_courses/course_registration/__pycache__
-/student_courses/student_courses/settings.py
-/student_courses/media/
+student_courses/student_courses/__pycache__
+student_courses/course_registration/__pycache__
+student_courses/student_courses/settings.py
+student_courses/media/
