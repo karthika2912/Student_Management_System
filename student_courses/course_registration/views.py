@@ -2,8 +2,8 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import StudentSerializer,Department_DetailsSerializer,Student_Course_DetailsSerializer
-from .models import Account,Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model,Resumes
+from .serializers import StudentSerializer,Department_DetailsSerializer,Student_Course_DetailsSerializer,Department_wise_Course_DetailsSerializer,AttendanceSerializer,MarksSerializer
+from .models import Account,Student_Details,Department_Details,Department_wise_Course_Details,Student_Course_Details,Class_Student,Class_Details,Time_Table_Model,Resumes,Attendance,Marks
 from django.db.models import Count
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate, login
@@ -18,6 +18,7 @@ from django.core.files.storage import default_storage
 import uuid
 from django.http import FileResponse
 import io
+from rest_framework import status
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
@@ -59,10 +60,77 @@ class HomePageApi(View):
             else:
                 res['department']='ECE'
        
-        if request.user.is_staff:
-            return render(request,'home.html',{'response':response})
-        else:
-            return render(request,'unauthorized_page.html')
+        #if request.user.is_staff:
+        return render(request,'home.html',{'response':response})
+      #  else:
+        #    return render(request,'unauthorized_page.html')
+
+
+
+@api_view(['DELETE'])
+def delete_course_student_object(request, pk):
+    try:
+        obj = Student_Course_Details.objects.filter(student_roll=pk)
+    except Student_Course_Details.DoesNotExist:
+        return Response(status=404)
+
+    obj.delete()
+    return Response(status=204)  
+
+@api_view(['POST'])
+def attendance_post(request):
+    serializer = AttendanceSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getStudentAttendance(request,pk):
+    tasks=Attendance.objects.filter(student=pk)
+    serializer=AttendanceSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def getCourseByName(request,name):
+    tasks=Department_wise_Course_Details.objects.filter(course_title=name)
+    serializer=Department_wise_Course_DetailsSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getAttendanceByDate(request,date):
+    tasks=Attendance.objects.filter(date=date)
+    serializer=AttendanceSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def studentCourseByName(request):
+    tasks=Student_Course_Details.objects.all()
+    serializer=Student_Course_DetailsSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def studentCourseDetails(request,pk):
+    tasks=Student_Course_Details.objects.filter(student_roll=pk)
+    serializer=Student_Course_DetailsSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def courseDetailsById(request,pk):
+    tasks=Department_wise_Course_Details.objects.get(pk=pk)
+    serializer=Department_wise_Course_DetailsSerializer(tasks,many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def courseDetails(request,pk):
+    tasks=Department_wise_Course_Details.objects.filter(department_name=pk)
+    serializer=Department_wise_Course_DetailsSerializer(tasks,many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 def studentDetail(request,pk):
@@ -70,13 +138,50 @@ def studentDetail(request,pk):
     serializer=StudentSerializer(tasks,many=False)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def getMarks(request,stud_id):
+    tasks=Marks.objects.filter(student=stud_id)
+    serializer=MarksSerializer(tasks,many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def marks_post(request):
+    serializer = MarksSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def student_course(request):
+    serializer = Student_Course_DetailsSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def create_object(request):
+    serializer = StudentSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def Create(request):
-    if request.method=='POST':
+    
         roll=request.POST.get("roll")
         name=request.POST.get("name")
         department=request.POST.get("department")
-
+        
         data={
             'roll':roll,
             'name':name,
@@ -88,6 +193,21 @@ def Create(request):
             serializer.save()
     
         return redirect('/api/home/')
+    
+
+@api_view(['PUT'])
+def update_object(request, pk):
+    try:
+        obj = Student_Details.objects.get(pk=pk)
+    except Student_Details.DoesNotExist:
+        return Response(status=404)
+
+    serializer = StudentSerializer(obj, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=400)
 
 def Update(request,pk):
     print("Entered Update function")
@@ -132,7 +252,15 @@ def Update(request,pk):
                 res['department']='ECE'
         return render(request,"home.html",{'response':response,'recently_updated_student':recently_updated_student})
 
-        
+@api_view(['DELETE'])
+def delete_object(request, pk):
+    try:
+        obj = Student_Details.objects.get(pk=pk)
+    except Student_Details.DoesNotExist:
+        return Response(status=404)
+
+    obj.delete()
+    return Response(status=204)       
 
 def Delete(request,pk):
     task=Student_Details.objects.get(id=pk)
@@ -150,11 +278,11 @@ def UpdateStudent(request,pk):
 class CoursesHomePage(View):
     def get(self,request):
         response=requests.get('http://127.0.0.1:8001/api/student-list/').json()
-        if not request.user.is_staff:
-            print("Authorized")
-            return render(request,"home_course.html",{'response':response})
-        else:
-            return render(request,"unauthorized_page.html")
+        #if not request.user.is_staff:
+         #   print("Authorized")
+        return render(request,"home_course.html",{'response':response})
+        #else:
+            #return render(request,"unauthorized_page.html")
 
 class AddCourse(View):
     def get(self,request,roll):

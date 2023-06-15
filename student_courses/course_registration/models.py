@@ -6,8 +6,11 @@ class Department_Details(models.Model):
 
 class Student_Details(models.Model):
     roll=models.CharField(max_length=20)
-    name=models.CharField(max_length=100)
+    firstname=models.CharField(max_length=100,default="fn")
+    lastname=models.CharField(max_length=100,default="ln")
     department=models.ForeignKey(Department_Details,on_delete=models.CASCADE)
+    dob=models.CharField(max_length=10,default="29-12-2001")
+    gender=models.CharField(max_length=10,default="F")
 
 
 class Department_wise_Course_Details(models.Model):
@@ -52,4 +55,19 @@ class Account(models.Model):
     def __str__(self):
         return self.user.username
 
+class Attendance(models.Model):
+    student=models.ForeignKey(Student_Details,on_delete=models.CASCADE)
+    date=models.CharField(max_length=10)
+    first_hour=models.CharField(max_length=1)
+    second_hour=models.CharField(max_length=1)
+    third_hour=models.CharField(max_length=1)
+    fourth_hour=models.CharField(max_length=1)
+    fifth_hour=models.CharField(max_length=1)
+    present=models.IntegerField()
+    absent=models.IntegerField()
 
+class Marks(models.Model):
+    sessional=models.IntegerField()
+    external=models.IntegerField()
+    student=models.ForeignKey(Student_Details,on_delete=models.CASCADE)
+    course=models.ForeignKey(Department_wise_Course_Details,on_delete=models.CASCADE)

@@ -20,13 +20,17 @@ urlpatterns=[
     path('student-list/',views.studentList,name="student-list"),
     path('student-detail/<str:pk>',views.studentDetail,name="student-detail"),
     path('create/',views.Create,name="create"),
+    path('create_new/',views.create_object,name="create"),
     path('update/<str:pk>',views.Update,name="update"),
+     path('update_object/<str:pk>',views.update_object,name="update"),
     path('delete/<str:pk>',views.Delete,name="delete"),
+     path('delete_obj/<int:pk>/', views.delete_object, name='delete_object'),
     path('home/',HomePageApi.as_view(),name="home"),
+    path('dept_course/<str:pk>',views.courseDetails),
     path('add_student',AddStudent.as_view(),name="home"),
     path('update_student/<str:pk>',views.UpdateStudent),
     path('update_student/update/<str:pk>',views.Update),
-    
+    path('overview/',views.apiOverview),
     path('home_course',CoursesHomePage.as_view(),name="Courses"),
     path('add_course/<str:roll>',AddCourse.as_view(),name="Add Courses"),
     path('add_course/courseCreate/',views.courseCreate,name="courseCreate"),
@@ -60,6 +64,22 @@ urlpatterns=[
     path('update_password_home/update_password/',views.update_password),
     path('update_password_home/',views.update_password_home),
     path('dashboard/',views.dashboard_view),
-    path('unauthorized/',views.unauthorized)
+    path('unauthorized/',views.unauthorized),
+
+    path('student_course/',views.student_course),
+    path('get_student_course/<str:pk>/',views.studentCourseDetails),
+    path('get_course_by_id/<str:pk>',views.courseDetailsById),
+    path('delete_course_student_object/<str:pk>',views.delete_course_student_object),
+
+
+    path('attendance_post/',views.attendance_post),
+    path('get_attendance/<str:pk>',views.getStudentAttendance),
+    path('get_attendance_by_date/<str:date>',views.getAttendanceByDate),
+
+    path('marks_post/',views.marks_post),
+    path('get_marks/<str:stud_id>',views.getMarks),
+    path('get_course_by_name/<str:name>',views.getCourseByName),
+
+    path('course_student/',views.studentCourseByName)
    
 ]                                                                                                                                                                                                                                                                                                                                                           
